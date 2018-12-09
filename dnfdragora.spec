@@ -3,7 +3,7 @@
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
 Version:	1.1.0
-Release:	2
+Release:	3
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
@@ -13,6 +13,7 @@ BuildRequires:	gettext
 BuildRequires:	itstool
 BuildRequires:	cmake ninja
 Requires:	polkit
+Requires:	dbus
 Requires:	dnf
 Requires:	%{_lib}yui%{yui_major}-ncurses
 Requires:	%{_lib}yui%{yui_major}-mga-ncurses
@@ -26,6 +27,7 @@ Graphical frontend for installing and removing software
 
 %prep
 %autosetup -p1
+sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
 %cmake -G Ninja
 
 %build
