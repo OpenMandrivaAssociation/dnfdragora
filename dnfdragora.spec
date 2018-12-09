@@ -11,6 +11,7 @@ Source0:	https://github.com/manatools/dnfdragora/archive/%{version}.tar.gz
 
 BuildRequires:	gettext
 BuildRequires:	itstool
+BuildRequires:	cmake ninja
 Requires:	polkit
 Requires:	dnf
 Requires:	%{_lib}yui%{yui_major}-ncurses
