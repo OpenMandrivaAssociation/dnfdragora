@@ -24,7 +24,7 @@ Requires:	python-libyui
 Requires:	python-yaml
 # (tpg) TODO split to subpackages qt, gtk and common
 Requires:	%{_lib}yui%{yui_major}-qt
-Requires:	%{_lib}yui%{yui_major}-mga-qt
+Requires:	%{_lib}yui-mga%{yui_major}-qt
 
 %description
 Graphical frontend for installing and removing software
