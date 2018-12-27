@@ -3,7 +3,7 @@
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
 Version:	1.1.0
-Release:	4
+Release:	5
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
@@ -14,6 +14,9 @@ BuildRequires:	itstool
 BuildRequires:	cmake ninja
 BuildRequires:	pkgconfig(python)
 BuildRequires:	python3dist(pyyaml)
+BuildRequires:	python-sphinx
+BuildRequires:	python-sh
+BuildRequires:	python-notify2
 Requires:	polkit
 Requires:	dbus
 Requires:	dnf
@@ -22,9 +25,16 @@ Requires:	%{_lib}yui%{yui_major}-mga-ncurses
 Requires:	python-dnfdaemon dnfdaemon
 Requires:	python-libyui
 Requires:	python-yaml
-# (tpg) TODO split to subpackages qt, gtk and common
+Requires:	python-dnf
+Requires:	python-gi
+Requires:	python-hawkey
+Requires:	python-sh
+Requires:	python-notify2
+# FIXME split into qt/ncurses subpackages
 Requires:	%{_lib}yui%{yui_major}-qt
 Requires:	%{_lib}yui-mga%{yui_major}-qt
+Requires:	%{_lib}yui%{yui_major}-ncurses
+Requires:	%{_lib}yui%{yui_major}-mga-ncurses
 
 %description
 Graphical frontend for installing and removing software
@@ -55,3 +65,5 @@ sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
 %{_datadir}/%{name}
 %{_datadir}/icons/hicolor/*/*/*.png
 %{_datadir}/applications/*
+%{_mandir}/man5/*.5*
+%{_mandir}/man8/*.8*
