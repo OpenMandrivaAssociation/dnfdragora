@@ -3,11 +3,12 @@
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
 Version:	1.1.0
-Release:	5
+Release:	6
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
 Source0:	https://github.com/manatools/dnfdragora/archive/%{version}.tar.gz
+Patch0:   dnfdragora-icon.patch
 
 BuildRequires:	gettext
 BuildRequires:	itstool
