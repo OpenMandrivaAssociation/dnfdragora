@@ -31,9 +31,9 @@ Requires:	python-sh
 Requires:	python-notify2
 # FIXME split into qt/ncurses subpackages
 Requires:	%{_lib}yui%{yui_major}-qt
-Requires:	%{_lib}yui-mga%{yui_major}-qt
+Requires:	%{_lib}yui%{yui_major}-mga-qt
 Requires:	%{_lib}yui%{yui_major}-ncurses
-Requires:	%{_lib}yui-mga%{yui_major}-ncurses
+Requires:	%{_lib}yui%{yui_major}-mga-ncurses
 
 %description
 Graphical frontend for installing and removing software
