@@ -1,5 +1,5 @@
 diff --git a/dnfdragora/groupicons.py b/dnfdragora/groupicons.py
-index ab2b3c4..476b127 100644
+index ab2b3c4..263e52f 100644
 --- a/dnfdragora/groupicons.py
 +++ b/dnfdragora/groupicons.py
 @@ -6,10 +6,10 @@ class GroupIcons:
@@ -9,8 +9,9 @@ index ab2b3c4..476b127 100644
 -            self.mini_icon_path = self.icon_path + "mini/"
 +            self.mini_icon_path = self.icon_path + "mini_/"
          else:
-             self.icon_path = '/usr/share/icons/'
+-            self.icon_path = '/usr/share/icons/'
 -            self.mini_icon_path = '/usr/share/icons/mini/'
++            self.icon_path = '/usr/share/icons_/'
 +            self.mini_icon_path = '/usr/share/icons/mini_/'
  
          # TODO add a localized string for any group in "title"
