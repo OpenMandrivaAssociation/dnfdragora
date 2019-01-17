@@ -3,16 +3,16 @@
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
 Version:	1.1.0
-Release:	8
+Release:	9
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
 Source0:	https://github.com/manatools/dnfdragora/archive/%{version}.tar.gz
-Patch0:   dnfdragora-icon.patch
-
+Patch0:		dnfdragora-icon.patch
 BuildRequires:	gettext
 BuildRequires:	itstool
-BuildRequires:	cmake ninja
+BuildRequires:	cmake
+BuildRequires:	ninja
 BuildRequires:	pkgconfig(python)
 BuildRequires:	python3dist(pyyaml)
 BuildRequires:	python-sphinx
@@ -29,6 +29,7 @@ Requires:	python-gi
 Requires:	python-hawkey
 Requires:	python-sh
 Requires:	python-notify2
+Requires:	python3dist(pystray)
 # FIXME split into qt/ncurses subpackages
 Requires:	%{_lib}yui%{yui_major}-qt
 Requires:	%{_lib}yui%{yui_major}-mga-qt
@@ -36,7 +37,7 @@ Requires:	%{_lib}yui%{yui_major}-ncurses
 Requires:	%{_lib}yui%{yui_major}-mga-ncurses
 
 %description
-Graphical frontend for installing and removing software
+Graphical frontend for installing and removing software.
 
 %prep
 %autosetup -p1
