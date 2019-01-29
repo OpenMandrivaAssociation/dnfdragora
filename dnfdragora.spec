@@ -3,12 +3,14 @@
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
 Version:	1.1.1
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
 Source0:	https://github.com/manatools/dnfdragora/archive/%{version}.tar.gz
 Patch0:		dnfdragora-icon.patch
+# ( crazy)  https://issues.openmandriva.org/show_bug.cgi?id=2422
+Patch1:		0001-znver1-support.patch
 BuildRequires:	gettext
 BuildRequires:	itstool
 BuildRequires:	cmake
@@ -35,6 +37,8 @@ Requires:	%{_lib}yui%{yui_major}-qt
 Requires:	%{_lib}yui%{yui_major}-mga-qt
 Requires:	%{_lib}yui%{yui_major}-ncurses
 Requires:	%{_lib}yui%{yui_major}-mga-ncurses
+
+# (crazy) FIXME split updater
 
 %description
 Graphical frontend for installing and removing software.
