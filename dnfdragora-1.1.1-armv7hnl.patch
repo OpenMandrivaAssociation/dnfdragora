@@ -18,7 +18,7 @@ diff -up dnfdragora-1.1.1/dnfdragora/const.py.omv~ dnfdragora-1.1.1/dnfdragora/c
      "x86_64": set(['x86_64', 'znver1', 'i686', 'i586', 'i386', 'noarch']),
      "i586": set(['i686', 'i586', 'i386', 'znver1_32', 'noarch']),
 -    "arm": set(['armv7hl', 'noarch'])
-+    "arm": set(['armv7hl', 'armv7hnl', 'armv8hnl', 'noarch'])
++    "arm": set(['armv7hl', 'armv7hnl', 'armv8hnl', 'noarch']),
 +    "aarch64": set(['aarch64', 'noarch'])
  }
  
