@@ -48,10 +48,24 @@ Requires:	%{_lib}yui%{yui_major}-mga-ncurses
 %description
 Graphical frontend for installing and removing software.
 
+%package updater
+Summary:	Update notifier applet for %{name}
+Requires:	%{name} = %{EVRD}
+Requires:	libnotify
+Requires:	python-notify2
+Requires:	python-pyxdg
+Requires:	python-cairosvg
+Requires:	python-imaging
+Requires:	python3dist(pystray)
+
+%description updater
+Updating applet for %{name}
+
 %prep
 %autosetup -p1
 sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
-%cmake -G Ninja
+%cmake -G Ninja \
+	-DENABLE_COMPS:BOOL=ON
 
 %build
 %ninja_build -C build
@@ -66,13 +80,21 @@ sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
 
 %files -f %{name}.lang
 %{_sysconfdir}/dnfdragora/dnfdragora.yaml
-%{_sysconfdir}/xdg/autostart/org.mageia.dnfdragora-updater.desktop
 %{_bindir}/dnfdragora
-%{_bindir}/dnfdragora-updater
 %{py_puresitedir}/dnfdragora
+%exclude %{py_puresitedir}/%{name}/updater.py
+%exclude %{py_puresitedir}/%{name}/__pycache__/updater.cpython*.py?
 %{_datadir}/appdata/org.mageia.dnfdragora.appdata.xml
 %{_datadir}/%{name}
 %{_datadir}/icons/hicolor/*/*/*.png
-%{_datadir}/applications/*
+%{_datadir}/applications/*%{name}.desktop
+%{_datadir}/applications/*%{name}-localinstall.desktop
 %{_mandir}/man5/*.5*
 %{_mandir}/man8/*.8*
+
+%files updater
+%{_bindir}/%{name}-updater
+%{_datadir}/applications/*%{name}-updater.desktop
+%{_sysconfdir}/xdg/autostart/*%{name}*.desktop
+%{py_puresitedir}/%{name}/updater.py
+%{py_puresitedir}/%{name}/__pycache__/updater.cpython*.py?
