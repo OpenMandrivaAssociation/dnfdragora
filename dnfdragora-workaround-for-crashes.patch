@@ -1,0 +1,70 @@
+diff --git a/dnfdragora/updater.py b/dnfdragora/updater.py
+index 8e2ba89..7ce6c90 100644
+--- a/dnfdragora/updater.py
++++ b/dnfdragora/updater.py
+@@ -17,6 +17,7 @@ from dnfdragora import config, misc, dialogs, ui
+ from pystray import Menu, MenuItem
+ from pystray import Icon as Tray
+ import notify2
++import subprocess
+ 
+ notify2.init('dnfdragora-updater')
+ 
+@@ -139,14 +140,15 @@ class Updater:
+             if self.__backend:
+                 self.__backend.Exit()
+ 
+-
++    # Do not use for now, it breaks the threaad manager some way
++    # Need be investigated.
+     def __run_dialog(self, args, *kwargs):
+         if self.__tray != None and self.__main_gui == None:
+             time.sleep(0.5)
+             try:
+                 self.__main_gui = ui.mainGui(args)
+             except Exception as e:
+-                dialogs.warningMsgBox({'title' : _("Running dnfdragora failure"), "text": str(e), "richtext":True}) 
++                dialogs.warningMsgBox({'title' : _("Running dnfdragora failure"), "text": str(e), "richtext":True})
+                 yui.YDialog.deleteAllDialogs()
+                 time.sleep(0.5)
+                 self.__main_gui = None
+@@ -161,13 +163,36 @@ class Updater:
+             self.__main_gui = None
+             self.__get_updates()
+ 
++    def __run_ext_cmd(self, *args, wait=False):
++
++        try:
++            if (wait):
++                p = subprocess.Popen(
++                    args,
++                    stdout = subprocess.PIPE)
++                p.wait()
++            else:
++                p = subprocess.Popen(
++                    args,
++                    stdin = None, stdout = None, stderr = None, close_fds = True)
++
++            (ret, error) = p.communicate()
++
++        except subprocess.CalledProcessError as e:
++            sys.stderr.write(
++                "common::__run_ext_cmd() : [ERROR]: output = %s, error code = %s\n"
++                % (e.output, e.returncode))
++
++        return ret
+ 
+     def __run_dnfdragora(self, *kwargs):
+-        return self.__run_dialog({})
++        cmd = ['/usr/bin/dnfdragora']
++        return self.__run_ext_cmd(cmd, wait=True)
+ 
+ 
+     def __run_update(self, *kwargs):
+-        return self.__run_dialog({'update_only': True})
++        cmd = ['/usr/bin/dnfdragora' , '--update-only']
++        return self.__run_ext_cmd(cmd)
+ 
+ 
+     def __get_updates(self, *kwargs):
+

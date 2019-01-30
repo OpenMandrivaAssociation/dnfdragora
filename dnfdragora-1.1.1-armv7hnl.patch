@@ -1,0 +1,25 @@
+diff -up dnfdragora-1.1.1/dnfdragora/backend.py.omv~ dnfdragora-1.1.1/dnfdragora/backend.py
+--- dnfdragora-1.1.1/dnfdragora/backend.py.omv~	2019-01-30 22:25:36.132457009 +0100
++++ dnfdragora-1.1.1/dnfdragora/backend.py	2019-01-30 22:27:17.416478097 +0100
+@@ -135,7 +135,7 @@ class ArchFilter(BaseFilter):
+ 
+     def __init__(self, name, active=False):
+         BaseFilter.__init__(self, name, active)
+-        self.archs = ['noarch', 'i586', 'i686', 'znver1_32', 'x86_64', 'znver1', 'armv5tl', 'armv6hl', 'armv7hl', 'aarch64', 'ppc64', 'ppc64le', 's390x']
++        self.archs = ['noarch', 'i586', 'i686', 'znver1_32', 'x86_64', 'znver1', 'armv5tl', 'armv6hl', 'armv7hl', 'armv7hnl', 'armv8hnl', 'aarch64', 'ppc64', 'ppc64le', 's390x']
+ 
+     def run(self, pkgs):
+         BaseFilter.run(self, pkgs)
+diff -up dnfdragora-1.1.1/dnfdragora/const.py.omv~ dnfdragora-1.1.1/dnfdragora/const.py
+--- dnfdragora-1.1.1/dnfdragora/const.py.omv~	2019-01-30 22:25:39.723530397 +0100
++++ dnfdragora-1.1.1/dnfdragora/const.py	2019-01-30 22:27:02.595188331 +0100
+@@ -46,7 +46,8 @@ ARCH = subprocess.check_output(
+ ARCH_DICT = {
+     "x86_64": set(['x86_64', 'znver1', 'i686', 'i586', 'i386', 'noarch']),
+     "i586": set(['i686', 'i586', 'i386', 'znver1_32', 'noarch']),
+-    "arm": set(['armv7hl', 'noarch'])
++    "arm": set(['armv7hl', 'armv7hnl', 'armv8hnl', 'noarch'])
++    "aarch64": set(['aarch64', 'noarch'])
+ }
+ 
+ # arch for this platform
