@@ -1,5 +1,5 @@
 diff --git a/dnfdragora/updater.py b/dnfdragora/updater.py
-index 8e2ba89..7ce6c90 100644
+index 8e2ba89..6de4dca 100644
 --- a/dnfdragora/updater.py
 +++ b/dnfdragora/updater.py
 @@ -17,6 +17,7 @@ from dnfdragora import config, misc, dialogs, ui
@@ -28,21 +28,16 @@ index 8e2ba89..7ce6c90 100644
                  yui.YDialog.deleteAllDialogs()
                  time.sleep(0.5)
                  self.__main_gui = None
-@@ -161,13 +163,36 @@ class Updater:
+@@ -161,13 +163,31 @@ class Updater:
              self.__main_gui = None
              self.__get_updates()
  
-+    def __run_ext_cmd(self, *args, wait=False):
++    def __run_ext_cmd(self, *args, **kwargs):
 +
 +        try:
-+            if (wait):
-+                p = subprocess.Popen(
-+                    args,
-+                    stdout = subprocess.PIPE)
-+                p.wait()
-+            else:
-+                p = subprocess.Popen(
-+                    args,
++            p = subprocess.Popen(
++                    *args,
++                    **kwargs,
 +                    stdin = None, stdout = None, stderr = None, close_fds = True)
 +
 +            (ret, error) = p.communicate()
@@ -56,15 +51,14 @@ index 8e2ba89..7ce6c90 100644
  
      def __run_dnfdragora(self, *kwargs):
 -        return self.__run_dialog({})
-+        cmd = ['/usr/bin/dnfdragora']
-+        return self.__run_ext_cmd(cmd, wait=True)
++        cmd = "/usr/bin/dnfdragora"
++        return self.__run_ext_cmd(cmd)
  
  
      def __run_update(self, *kwargs):
 -        return self.__run_dialog({'update_only': True})
-+        cmd = ['/usr/bin/dnfdragora' , '--update-only']
++        cmd = "/usr/bin/dnfdragora --update-only".split()
 +        return self.__run_ext_cmd(cmd)
  
  
      def __get_updates(self, *kwargs):
-

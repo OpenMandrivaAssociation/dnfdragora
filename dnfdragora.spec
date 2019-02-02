@@ -3,7 +3,7 @@
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
 Version:	1.1.1
-Release:	3
+Release:	4
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
@@ -65,7 +65,7 @@ Updating applet for %{name}
 %autosetup -p1
 sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
 %cmake -G Ninja \
-	-DENABLE_COMPS:BOOL=ON
+	-DENABLE_COMPS:BOOL=OFF
 
 %build
 %ninja_build -C build
