@@ -1,0 +1,14 @@
+diff -up dnfdragora-1.1.1/etc/dnfdragora.yaml.in  dnfdragora-1.1.1/etc/new-dnfdragora.yaml.in
+--- dnfdragora-1.1.1/etc/dnfdragora.yaml.in     2019-01-18 04:07:58.000000000 +0100
++++ dnfdragora-1.1.1/etc/new-dnfdragora.yaml.in 2019-04-18 16:39:44.225597532 +0200
+@@ -2,8 +2,8 @@ settings:
+     use_comps: @USE_COMPS@
+     always_yes: False
+     update_interval: 180
+-#    log_filename: PATH/TO/dnfdragora.log
+-#    log_level_debug: True
++    log_filename: /var/log/dnfdragora.log
++    log_level_debug: True
+ 
+ #    path:
+ #        group_icons: /usr/share/icons
