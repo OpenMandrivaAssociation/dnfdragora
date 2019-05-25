@@ -3,7 +3,7 @@
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
 Version:	1.1.1
-Release:	5
+Release:	6
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
@@ -30,7 +30,9 @@ BuildRequires:	python-notify2
 Requires:	polkit
 Requires:	dbus
 Requires:	dnf
-Requires:	python-dnfdaemon dnfdaemon
+Requires:	dnf-plugins-core
+Requires:	python-dnfdaemon
+Requires:	dnfdaemon
 Requires:	python-libyui
 Requires:	python-yaml
 Requires:	python-dnf
