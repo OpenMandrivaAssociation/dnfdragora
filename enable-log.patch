@@ -1,6 +1,49 @@
-diff -up dnfdragora-1.1.1/etc/dnfdragora.yaml.in  dnfdragora-1.1.1/etc/new-dnfdragora.yaml.in
---- dnfdragora-1.1.1/etc/dnfdragora.yaml.in     2019-01-18 04:07:58.000000000 +0100
-+++ dnfdragora-1.1.1/etc/new-dnfdragora.yaml.in 2019-04-18 16:39:44.225597532 +0200
+diff -up dnfdragora-1.1.2/dnfdragora/config.py.4~ dnfdragora-1.1.2/dnfdragora/config.py
+--- dnfdragora-1.1.2/dnfdragora/config.py.4~	2019-04-26 15:35:38.000000000 +0200
++++ dnfdragora-1.1.2/dnfdragora/config.py	2019-06-14 22:04:35.088758067 +0200
+@@ -52,7 +52,7 @@ class AppConfig() :
+                 try:
+                     f = os.path.join(loc, self._fileName)
+                     with open(f, 'r') as ymlfile:
+-                        self._systemSettings = yaml.load(ymlfile)
++                        self._systemSettings = yaml.load(ymlfile, Loader=yaml.FullLoader)
+                         break
+                 except IOError as e:
+                     print ("Skipped exception: <%s> " % str(e))
+@@ -60,7 +60,7 @@ class AppConfig() :
+ 
+             try:
+                 with open(self._userPrfesPathName, 'r') as ymlfile:
+-                    self._userPrefs = yaml.load(ymlfile)
++                    self._userPrefs = yaml.load(ymlfile, Loader=yaml.FullLoader)
+             except IOError as e:
+                 print ("Skipped exception: <%s> " % str(e))
+ 
+diff -up dnfdragora-1.1.2/dnfdragora/ui.py.4~ dnfdragora-1.1.2/dnfdragora/ui.py
+--- dnfdragora-1.1.2/dnfdragora/ui.py.4~	2019-04-26 15:35:38.000000000 +0200
++++ dnfdragora-1.1.2/dnfdragora/ui.py	2019-06-14 22:06:23.932752787 +0200
+@@ -170,10 +170,14 @@ class mainGui(dnfdragora.basedragora.Bas
+         self._configFileRead()
+ 
+         if self.log_filename:
+-            if self.level_debug:
+-                misc.logger_setup(self.log_filename, loglvl=logging.DEBUG)
+-            else:
+-                misc.logger_setup(self.log_filename)
++            try:
++                if self.level_debug:
++                    misc.logger_setup(self.log_filename, loglvl=logging.DEBUG)
++                else:
++                    misc.logger_setup(self.log_filename)
++            except PermissionError as e:
++                print(_("Can't write to log file %s, logging to stderr instead") % self.log_filename, file=sys.stderr)
++                self.log_filename = None
+             logger.info("dnfdragora started")
+ 
+         # overrides settings from comand line
+diff -up dnfdragora-1.1.2/etc/dnfdragora.yaml.in.4~ dnfdragora-1.1.2/etc/dnfdragora.yaml.in
+--- dnfdragora-1.1.2/etc/dnfdragora.yaml.in.4~	2019-04-26 15:35:38.000000000 +0200
++++ dnfdragora-1.1.2/etc/dnfdragora.yaml.in	2019-06-14 22:04:35.088758067 +0200
 @@ -2,8 +2,8 @@ settings:
      use_comps: @USE_COMPS@
      always_yes: False
