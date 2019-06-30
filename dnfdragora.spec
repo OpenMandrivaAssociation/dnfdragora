@@ -3,7 +3,7 @@
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
 Version:	1.1.2
-Release:	2
+Release:	3
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
@@ -14,6 +14,7 @@ Patch1:		0001-znver1-support.patch
 # From crazy
 # https://bugzilla.redhat.com/show_bug.cgi?id=1505587
 Patch2:		dnfdragora-workaround-for-crashes.patch
+Patch3:		dnfdragora-1.1.2-defaults.patch
 # patch to enable transaction logs https://issues.openmandriva.org/show_bug.cgi?id=2454  (penguin)
 Patch4:		enable-log.patch
 Patch5:		dnfdragora-1.1.2-menuentry.patch

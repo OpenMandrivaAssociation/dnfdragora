@@ -1,0 +1,18 @@
+diff -up dnfdragora-1.1.2/dnfdragora/ui.py.omv~ dnfdragora-1.1.2/dnfdragora/ui.py
+--- dnfdragora-1.1.2/dnfdragora/ui.py.omv~	2019-07-01 00:32:36.686977161 +0200
++++ dnfdragora-1.1.2/dnfdragora/ui.py	2019-07-01 00:35:21.654969157 +0200
+@@ -412,9 +412,11 @@ class mainGui(dnfdragora.basedragora.Bas
+         for f in ordered_filters:
+             item = yui.YItem(self.filters[f]['title'], False)
+ 
+-            filter_item = 'to_update'
+-            if not self.update_only and 'filter' in view.keys():
+-                filter_item = view['filter']
++            filter_item = 'all'
++            if self.update_only:
++                filter_item = 'to_update'
++#            if not self.update_only and 'filter' in view.keys():
++#                filter_item = view['filter']
+ 
+             if filter_item == f:
+                 item.setSelected(True)
