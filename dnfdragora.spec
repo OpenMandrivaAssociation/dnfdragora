@@ -3,7 +3,7 @@
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
 Version:	1.1.2
-Release:	3
+Release:	4
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
@@ -83,6 +83,7 @@ sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
 #make test
 
 %files -f %{name}.lang
+%dir %{_sysconfdir}/dnfdragora
 %{_sysconfdir}/dnfdragora/dnfdragora.yaml
 %{_bindir}/dnfdragora
 %{py_puresitedir}/dnfdragora
