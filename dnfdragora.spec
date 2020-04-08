@@ -16,7 +16,7 @@ Patch1:		0001-znver1-support.patch
 #Patch2:		dnfdragora-workaround-for-crashes.patch
 Patch3:		dnfdragora-1.1.2-defaults.patch
 # patch to enable transaction logs https://issues.openmandriva.org/show_bug.cgi?id=2454  (penguin)
-Patch4:		enable-log.patch
+#Patch4:		enable-log.patch
 Patch5:		dnfdragora-1.1.2-menuentry.patch
 BuildRequires:	gettext
 BuildRequires:	itstool
