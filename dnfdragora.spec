@@ -18,6 +18,7 @@ Patch3:		dnfdragora-1.1.2-defaults.patch
 # patch to enable transaction logs https://issues.openmandriva.org/show_bug.cgi?id=2454  (penguin)
 #Patch4:		enable-log.patch
 Patch5:		dnfdragora-1.1.2-menuentry.patch
+Patch6:		00_user_setting.patch
 BuildRequires:	gettext
 BuildRequires:	itstool
 BuildRequires:	cmake
