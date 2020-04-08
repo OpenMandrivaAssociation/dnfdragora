@@ -7,7 +7,7 @@ Release:	1
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
-Source0:	https://github.com/manatools/dnfdragora/archive/%{version}/%{name}-%{versiom}.tar.gz
+Source0:	https://github.com/manatools/dnfdragora/archive/%{version}/%{name}-%{version}.tar.gz
 Patch0:		dnfdragora-icon.patch
 # ( crazy)  https://issues.openmandriva.org/show_bug.cgi?id=2422
 Patch1:		0001-znver1-support.patch
