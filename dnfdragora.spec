@@ -13,7 +13,7 @@ Patch0:		dnfdragora-icon.patch
 Patch1:		0001-znver1-support.patch
 # From crazy
 # https://bugzilla.redhat.com/show_bug.cgi?id=1505587
-Patch2:		dnfdragora-workaround-for-crashes.patch
+#Patch2:		dnfdragora-workaround-for-crashes.patch
 Patch3:		dnfdragora-1.1.2-defaults.patch
 # patch to enable transaction logs https://issues.openmandriva.org/show_bug.cgi?id=2454  (penguin)
 Patch4:		enable-log.patch
