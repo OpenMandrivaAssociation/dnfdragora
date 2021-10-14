@@ -4,7 +4,7 @@
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
 Version:	1.1.2
-Release:	6
+Release:	7
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
@@ -95,8 +95,8 @@ sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
 %{_datadir}/icons/hicolor/*/*/*.png
 %{_datadir}/applications/*%{name}.desktop
 %{_datadir}/applications/*%{name}-localinstall.desktop
-%{_mandir}/man5/*.5*
-%{_mandir}/man8/*.8*
+%doc %{_mandir}/man5/*.5*
+%doc %{_mandir}/man8/*.8*
 
 %files updater
 %{_bindir}/%{name}-updater
