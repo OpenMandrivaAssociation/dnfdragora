@@ -9,12 +9,10 @@ License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
 Source0:	https://github.com/manatools/dnfdragora/archive/%{name}-%{version}.tar.gz
-Patch0:		dnfdragora-icon.patch
 # ( crazy)  https://issues.openmandriva.org/show_bug.cgi?id=2422
 Patch1:		0001-znver1-support.patch
 # patch to enable transaction logs https://issues.openmandriva.org/show_bug.cgi?id=2454  (penguin)
 Patch2:		enable-log.patch
-Patch5:		dnfdragora-1.1.2-menuentry.patch
 BuildRequires:	gettext
 BuildRequires:	itstool
 BuildRequires:	cmake
