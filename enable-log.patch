@@ -1,35 +1,11 @@
-diff -up dnfdragora-1.1.2/dnfdragora/config.py.4~ dnfdragora-1.1.2/dnfdragora/config.py
---- dnfdragora-1.1.2/dnfdragora/config.py.4~	2019-04-26 15:35:38.000000000 +0200
-+++ dnfdragora-1.1.2/dnfdragora/config.py	2019-06-14 22:04:35.088758067 +0200
-@@ -52,7 +52,7 @@ class AppConfig() :
-                 try:
-                     f = os.path.join(loc, self._fileName)
-                     with open(f, 'r') as ymlfile:
--                        self._systemSettings = yaml.load(ymlfile)
-+                        self._systemSettings = yaml.load(ymlfile, Loader=yaml.FullLoader)
-                         break
-                 except IOError as e:
-                     print ("Skipped exception: <%s> " % str(e))
-@@ -60,7 +60,7 @@ class AppConfig() :
- 
-             try:
-                 with open(self._userPrfesPathName, 'r') as ymlfile:
--                    self._userPrefs = yaml.load(ymlfile)
-+                    self._userPrefs = yaml.load(ymlfile, Loader=yaml.FullLoader)
-             except IOError as e:
-                 print ("Skipped exception: <%s> " % str(e))
- 
-diff -up dnfdragora-1.1.2/dnfdragora/ui.py.4~ dnfdragora-1.1.2/dnfdragora/ui.py
---- dnfdragora-1.1.2/dnfdragora/ui.py.4~	2019-04-26 15:35:38.000000000 +0200
-+++ dnfdragora-1.1.2/dnfdragora/ui.py	2019-06-14 22:06:23.932752787 +0200
-@@ -170,10 +170,14 @@ class mainGui(dnfdragora.basedragora.Bas
-         self._configFileRead()
- 
-         if self.log_filename:
--            if self.level_debug:
--                misc.logger_setup(self.log_filename, loglvl=logging.DEBUG)
--            else:
--                misc.logger_setup(self.log_filename)
+diff --git a/dnfdragora/ui.py b/dnfdragora/ui.py
+index 37bbcd0..49c904f 100644
+--- a/dnfdragora/ui.py
++++ b/dnfdragora/ui.py
+@@ -235,6 +235,14 @@ class mainGui(dnfdragora.basedragora.BaseDragora):
+               misc.logger_setup(log_filename, loglvl=logging.DEBUG)
+             else:
+               misc.logger_setup(log_filename)
 +            try:
 +                if self.level_debug:
 +                    misc.logger_setup(self.log_filename, loglvl=logging.DEBUG)
@@ -38,12 +14,13 @@ diff -up dnfdragora-1.1.2/dnfdragora/ui.py.4~ dnfdragora-1.1.2/dnfdragora/ui.py
 +            except PermissionError as e:
 +                print(_("Can't write to log file %s, logging to stderr instead") % self.log_filename, file=sys.stderr)
 +                self.log_filename = None
+             print("Logging into %s, debug mode is %s"%(self.log_directory, ("enabled" if self.level_debug else "disabled")))
              logger.info("dnfdragora started")
- 
-         # overrides settings from comand line
-diff -up dnfdragora-1.1.2/etc/dnfdragora.yaml.in.4~ dnfdragora-1.1.2/etc/dnfdragora.yaml.in
---- dnfdragora-1.1.2/etc/dnfdragora.yaml.in.4~	2019-04-26 15:35:38.000000000 +0200
-+++ dnfdragora-1.1.2/etc/dnfdragora.yaml.in	2019-06-14 22:04:35.088758067 +0200
+         else:
+diff --git a/etc/dnfdragora.yaml.in b/etc/dnfdragora.yaml.in
+index e2fab2e..18cbdd4 100644
+--- a/etc/dnfdragora.yaml.in
++++ b/etc/dnfdragora.yaml.in
 @@ -2,8 +2,8 @@ settings:
      use_comps: @USE_COMPS@
      always_yes: False

@@ -1,23 +1,19 @@
 %global debug_package %{nil}
-%define yui_major 8
+%define yui_major 15
 
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
-Version:	1.1.2
-Release:	7
+Version:	2.1.2
+Release:	1
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
-Source0:	https://github.com/manatools/dnfdragora/archive/%{version}.tar.gz
+Source0:	https://github.com/manatools/dnfdragora/archive/%{name}-%{version}.tar.gz
 Patch0:		dnfdragora-icon.patch
 # ( crazy)  https://issues.openmandriva.org/show_bug.cgi?id=2422
 Patch1:		0001-znver1-support.patch
-# From crazy
-# https://bugzilla.redhat.com/show_bug.cgi?id=1505587
-Patch2:		dnfdragora-workaround-for-crashes.patch
-Patch3:		dnfdragora-1.1.2-defaults.patch
 # patch to enable transaction logs https://issues.openmandriva.org/show_bug.cgi?id=2454  (penguin)
-Patch4:		enable-log.patch
+Patch2:		enable-log.patch
 Patch5:		dnfdragora-1.1.2-menuentry.patch
 BuildRequires:	gettext
 BuildRequires:	itstool
