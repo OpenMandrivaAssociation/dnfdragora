@@ -4,7 +4,7 @@
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
 Version:	2.1.2
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
@@ -36,6 +36,7 @@ Requires:	python-hawkey
 Requires:	python-sh
 Requires:	python-notify2
 Requires:	python3dist(pystray)
+Requires:	python-manatools
 # FIXME split into qt/ncurses subpackages
 Requires:	%{_lib}yui%{yui_major}-qt
 Requires:	%{_lib}yui%{yui_major}-mga-qt
