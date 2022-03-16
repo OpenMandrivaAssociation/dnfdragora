@@ -4,7 +4,7 @@
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
 Version:	2.1.2
-Release:	2
+Release:	3
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
@@ -98,4 +98,4 @@ sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
 %{_datadir}/applications/*%{name}-updater.desktop
 %{_sysconfdir}/xdg/autostart/*%{name}*.desktop
 %{py_puresitedir}/%{name}/updater.py
-%{py_puresitedir}/%{name}/__pycache__/updater.cpython*.py?
+# %{py_puresitedir}/%{name}/__pycache__/updater.cpython*.py?
