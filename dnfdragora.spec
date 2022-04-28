@@ -4,7 +4,7 @@
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
 Version:	2.1.2
-Release:	5
+Release:	6
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
@@ -37,6 +37,10 @@ Requires:	python-sh
 Requires:	python-notify2
 Requires:	python3dist(pystray)
 Requires:	python-manatools
+# Some people start complains about error during launch due missing some gir/typelibs. This files should be auto-installed via g-ir scanner
+# but looks like somethings goes wrong. So to be on safe side, let's pull needed packages manually.
+Requires:	typelib(GLib)
+Requires:	glib-gir
 # FIXME split into qt/ncurses subpackages
 Requires:	%{_lib}yui%{yui_major}-qt
 Requires:	%{_lib}yui%{yui_major}-mga-qt
