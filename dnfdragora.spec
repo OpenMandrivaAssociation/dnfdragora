@@ -1,14 +1,14 @@
 %global debug_package %{nil}
-%define yui_major 15
+%define yui_major 16
 
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
-Version:	2.1.2
-Release:	9
+Version:	2.1.4
+Release:	1
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
-Source0:	https://github.com/manatools/dnfdragora/archive/%{name}-%{version}.tar.gz
+Source0:	https://github.com/manatools/dnfdragora/archive/refs/tags/%{version}.tar.gz
 # ( crazy)  https://issues.openmandriva.org/show_bug.cgi?id=2422
 Patch1:		0001-znver1-support.patch
 # patch to enable transaction logs https://issues.openmandriva.org/show_bug.cgi?id=2454  (penguin)
@@ -18,7 +18,7 @@ BuildRequires:	itstool
 BuildRequires:	cmake
 BuildRequires:	ninja
 BuildRequires:	pkgconfig(python)
-BuildRequires:	python3dist(pyyaml)
+BuildRequires:	python%{pyver}dist(pyyaml)
 BuildRequires:	python-sphinx
 BuildRequires:	python-sh
 BuildRequires:	python-notify2
@@ -28,24 +28,24 @@ Requires:	dnf
 Requires:	dnf-plugins-core
 Requires:	python-dnfdaemon
 Requires:	dnfdaemon
-Requires:	python-libyui
+Requires:	python-yui
 Requires:	python-yaml
 Requires:	python-dnf
 Requires:	python-gi
 Requires:	python-hawkey
 Requires:	python-sh
 Requires:	python-notify2
-Requires:	python3dist(pystray)
+Requires:	python%{pyver}dist(pystray)
 Requires:	python-manatools
 # Some people start complains about error during launch due missing some gir/typelibs. This files should be auto-installed via g-ir scanner
 # but looks like somethings goes wrong. So to be on safe side, let's pull needed packages manually.
 Requires:	typelib(GLib)
 Requires:	glib-gir
 # FIXME split into qt/ncurses subpackages
-Requires:	%{_lib}yui%{yui_major}-qt
-Requires:	%{_lib}yui%{yui_major}-mga-qt
-Requires:	%{_lib}yui%{yui_major}-ncurses
-Requires:	%{_lib}yui%{yui_major}-mga-ncurses
+Requires:	%{_lib}yui-qt
+Requires:	%{_lib}yui-mga-qt
+Requires:	%{_lib}yui-ncurses
+Requires:	%{_lib}yui-mga-ncurses
 
 # (crazy) FIXME split updater
 
