@@ -3,12 +3,12 @@
 
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
-Version:	2.1.4
+Version:	2.1.5
 Release:	1
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
-Source0:	https://github.com/manatools/dnfdragora/archive/refs/tags/%{version}.tar.gz
+Source0:	https://github.com/manatools/dnfdragora/archive/refs/tags/%{version}/%{name}-%{version}.tar.gz
 # ( crazy)  https://issues.openmandriva.org/show_bug.cgi?id=2422
 Patch1:		0001-znver1-support.patch
 # patch to enable transaction logs https://issues.openmandriva.org/show_bug.cgi?id=2454  (penguin)
