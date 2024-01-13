@@ -3,7 +3,7 @@
 
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
-Version:	2.1.5
+Version:	2.1.6
 Release:	1
 License:	GPLv2+
 Group:		System/Configuration
