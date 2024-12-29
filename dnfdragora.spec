@@ -3,8 +3,8 @@
 
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
-Version:	2.1.6
-Release:	3
+Version:	2.99.0
+Release:	1
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
@@ -19,15 +19,16 @@ BuildRequires:	cmake
 BuildRequires:	ninja
 BuildRequires:	pkgconfig(python)
 BuildRequires:	python%{pyver}dist(pyyaml)
+BuildRequires:	python%{pyver}dist(libdnf5)
 BuildRequires:	python-sphinx
 BuildRequires:	python-sh
 BuildRequires:	python-notify2
 Requires:	polkit
 Requires:	dbus
-Requires:	dnf
+Requires:	dnf5
+Requires:	dnf5daemon-server
 Requires:	dnf-plugins-core
-Requires:	python-dnfdaemon
-Requires:	dnfdaemon
+Requires:	python3dist(libdnf5)
 Requires:	python-yui
 Requires:	python-yaml
 Requires:	python-dnf
@@ -46,6 +47,7 @@ Requires:	%{_lib}yui-qt
 Requires:	%{_lib}yui-mga-qt
 Requires:	%{_lib}yui-ncurses
 Requires:	%{_lib}yui-mga-ncurses
+Recommends:	(libyui-mga-gtk if gtk+3.0)
 
 # (crazy) FIXME split updater
 
