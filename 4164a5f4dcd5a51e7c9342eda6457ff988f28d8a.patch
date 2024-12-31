@@ -1,0 +1,49 @@
+From 4164a5f4dcd5a51e7c9342eda6457ff988f28d8a Mon Sep 17 00:00:00 2001
+From: Angelo Naselli <anaselli@linux.it>
+Date: Mon, 30 Dec 2024 16:17:16 +0100
+Subject: [PATCH] typos
+
+---
+ dnfdragora/dnfd_client.py | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/dnfdragora/dnfd_client.py b/dnfdragora/dnfd_client.py
+index 14d9ef7..9da9ed9 100644
+--- a/dnfdragora/dnfd_client.py
++++ b/dnfdragora/dnfd_client.py
+@@ -1469,9 +1469,9 @@ def Reinstall(self, specs, options={}, sync=False):
+             Unknown options are ignored.
+         '''
+         if not sync:
+-          self._run_dbus_async('Reinstall', False, specs, option)
++          self._run_dbus_async('Reinstall', False, specs, options)
+         else:
+-          self._run_dbus_sync('Reinstall', specs, option)
++          self._run_dbus_sync('Reinstall', specs, options)
+ 
+     def Downgrade(self, specs, options={}, sync=False):
+         '''
+@@ -1484,9 +1484,9 @@ def Downgrade(self, specs, options={}, sync=False):
+             Unknown options are ignored.
+         '''
+         if not sync:
+-          self._run_dbus_async('Downgrade', False, specs, option)
++          self._run_dbus_async('Downgrade', False, specs, options)
+         else:
+-          self._run_dbus_sync('Downgrade', specs, option)
++          self._run_dbus_sync('Downgrade', specs, options)
+ 
+     def DistroSync(self, specs, options={}, sync=False):
+         '''
+@@ -1500,9 +1500,9 @@ def DistroSync(self, specs, options={}, sync=False):
+             Unknown options are ignored.
+         '''
+         if not sync:
+-          self._run_dbus_async('DistroSync', False, specs, option)
++          self._run_dbus_async('DistroSync', False, specs, options)
+         else:
+-          self._run_dbus_sync('DistroSync', specs, option)
++          self._run_dbus_sync('DistroSync', specs, options)
+ 
+     def BuildTransaction(self, options={}, sync=False):
+         '''

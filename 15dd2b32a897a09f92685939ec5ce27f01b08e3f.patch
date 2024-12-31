@@ -1,0 +1,374 @@
+From 15dd2b32a897a09f92685939ec5ce27f01b08e3f Mon Sep 17 00:00:00 2001
+From: Angelo Naselli <anaselli@linux.it>
+Date: Tue, 31 Dec 2024 18:22:01 +0100
+Subject: [PATCH] Implemented Downgrade, Reinstall, DistroSync. It should be
+ resolve #242
+
+---
+ dnfdragora/const.py   |  14 ++++
+ dnfdragora/dialogs.py |  96 +++++++++++++++++++++++++
+ dnfdragora/ui.py      | 161 ++++++++++++++++++++++++++++++++++++------
+ 3 files changed, 251 insertions(+), 20 deletions(-)
+
+diff --git a/dnfdragora/const.py b/dnfdragora/const.py
+index dc7ce96..8cbb381 100644
+--- a/dnfdragora/const.py
++++ b/dnfdragora/const.py
+@@ -10,6 +10,7 @@
+ 
+ # NOTE part of this code is imported from yumex-dnf
+ 
++from enum import Enum
+ import os.path
+ import re
+ import subprocess
+@@ -62,6 +63,19 @@
+ 
+ # Constants
+ 
++class Actions(Enum):
++    '''
++    Enum
++        NORMAL      Install/Update/Remove packages
++        REINSTALL   Reinstall packages
++        DOWNGRADE   Downgrade packages
++        DISTRO_SYNC Use Distro Sync to synchronize packages with repo
++    '''
++    NORMAL = 1
++    REINSTALL = 2
++    DOWNGRADE = 3
++    DISTRO_SYNC = 4
++
+ # Main UI stack names
+ PAGE_PACKAGES = 'packages'
+ PAGE_QUEUE = 'queue'
+diff --git a/dnfdragora/dialogs.py b/dnfdragora/dialogs.py
+index ab936fc..09d3e38 100644
+--- a/dnfdragora/dialogs.py
++++ b/dnfdragora/dialogs.py
+@@ -346,6 +346,102 @@ def run(self, data):
+         return performedUndo
+ 
+ 
++class PackageActionDialog:
++    '''
++      PackageActionDialog is a dialog that allows to select the action 
++      to be performed on packages. Default behaviorn is Normal e.g.
++      Installing, Updating or removing selected packages.
++    '''
++
++    def __init__(self, parent, actionValue):
++        self.parent = parent
++        self.factory = self.parent.factory
++        self.actionValue = self.savedActionValue = actionValue
++        
++    def run(self):
++        '''
++          Propose a radio button list related to the possible actions
++        '''
++
++        ## push application title
++        appTitle = yui.YUI.app().applicationTitle()
++        ## set new title to get it in dialog
++        yui.YUI.app().setApplicationTitle(_("Action on selected packages") )
++        minWidth  = 60;
++        minHeight = 10;
++        dlg     = self.factory.createPopupDialog(yui.YDialogNormalColor)
++        minSize = self.factory.createMinSize(dlg, minWidth, minHeight)
++        layout  = self.factory.createVBox(minSize)
++
++        #labeledFrameBox - Actions
++        frame = self.factory.createFrame(layout, "Actions")
++        frame.setWeight( yui.YD_HORIZ, 1 )
++        frame = self.factory.createHVCenter( frame )
++        frame = self.factory.createHVSquash( frame )
++        frame = self.factory.createVBox( frame )
++
++        rbg       = self.factory.createRadioButtonGroup(frame)
++        frame   = self.factory.createVBox(rbg)
++        Normal  = self.factory.createRadioButton(self.factory.createLeft(frame), _("Normal (Install/Upgrade/Remove)"), self.actionValue == const.Actions.NORMAL)
++        Normal.setNotify(True)
++        rbg.addRadioButton(Normal)
++        
++        Reinstall = self.factory.createRadioButton(self.factory.createLeft(frame), _("Reinstall"), self.actionValue == const.Actions.REINSTALL)
++        Reinstall.setNotify(True)
++        if self.parent.update_only :
++            Reinstall.setDisabled()
++        rbg.addRadioButton(Reinstall)
++
++        Downgrade = self.factory.createRadioButton(self.factory.createLeft(frame), _("Downgrade"), self.actionValue == const.Actions.DOWNGRADE)
++        Downgrade.setNotify(True)
++        if self.parent.update_only :
++            Downgrade.setDisabled()
++        rbg.addRadioButton(Downgrade)
++
++        DistroSync = self.factory.createRadioButton(self.factory.createLeft(frame), _("Distro Sync"), self.actionValue == const.Actions.DISTRO_SYNC)
++        DistroSync.setNotify(True)
++        rbg.addRadioButton(DistroSync)
++    
++        align = self.factory.createRight(layout)
++        hbox = self.factory.createHBox(align)
++        okButton = self.factory.createPushButton(hbox, _("&Ok"))
++        cancelButton = self.factory.createPushButton(hbox, _("&Cancel"))
++        dlg.pollEvent()
++        dlg.setDefaultButton(cancelButton)
++
++        while (True) :
++            event = dlg.waitForEvent()
++            eventType = event.eventType()
++            #event type checking
++            if (eventType == yui.YEvent.CancelEvent) :
++                self.actionValue = self.savedActionValue
++                break
++            elif (eventType == yui.YEvent.WidgetEvent) :
++                # widget selected
++                widget = event.widget()
++
++                if (widget == cancelButton) :
++                    self.actionValue = self.savedActionValue
++                    break
++                elif (widget == okButton) :
++                    break
++                elif (widget == Normal) :
++                    self.actionValue = const.Actions.NORMAL
++                elif (widget == Reinstall) :
++                    self.actionValue = const.Actions.REINSTALL
++                elif (widget == Downgrade) :
++                    self.actionValue = const.Actions.DOWNGRADE
++                elif (widget == DistroSync) :
++                    self.actionValue = const.Actions.DISTRO_SYNC
++
++        dlg.destroy()
++
++        #restore old application title
++        yui.YUI.app().setApplicationTitle(appTitle)
++
++        return self.actionValue
++
++
+ class TransactionResult:
+     '''
+     TransactionResult is a dialog that shows the transaction dependencies before
+diff --git a/dnfdragora/ui.py b/dnfdragora/ui.py
+index 16c6dfd..52546d8 100644
+--- a/dnfdragora/ui.py
++++ b/dnfdragora/ui.py
+@@ -191,6 +191,7 @@ def __init__(self, options={}):
+           'downloads' : {}
+         } # obsoletes _files_to_download and _files_downloaded
+ 
++        self.packageActionValue = const.Actions.NORMAL
+         # TODO... _package_name, _gpg_confirm imported from old event management
+         # Try to remove them when fixing progress bar
+         self._package_name = None
+@@ -600,6 +601,16 @@ def _setupUI(self) :
+             for k in self.fileMenu.keys():
+                 self.fileMenu[k].this.own(False)
+ 
++            # building Actions menu
++            mItem = self.menubar.addMenu(_("&Actions"))
++            self.ActionMenu = {
++                 'menu_name' : mItem,
++                 'actions'   : yui.YMenuItem(mItem, _("&Action on packages")),
++            }
++            #Items must be "disowned"
++            for k in self.ActionMenu.keys():
++                self.ActionMenu[k].this.own(False)
++
+             # # building Information menu
+             # mItem = self.menubar.addMenu(_("&Information"))
+             # self.infoMenu = {
+@@ -1339,19 +1350,42 @@ def _populate_transaction(self) :
+         '''
+           Populate a transaction
+         '''
+-        for action in const.QUEUE_PACKAGE_TYPES:
+-            pkg_ids = self.packageQueue.get(action)
++        if self.packageActionValue == const.Actions.NORMAL:
++            for action in const.QUEUE_PACKAGE_TYPES.keys():
++                pkg_ids = self.packageQueue.get(action)
++                if len(pkg_ids) >0:
++                    pkgs = [dnfdragora.misc.pkg_id_to_full_nevra(pkg_id) for pkg_id in pkg_ids]
++                    logger.debug('adding: %s %s' %(const.QUEUE_PACKAGE_TYPES[action], pkgs))
++                    if action == 'i':
++                        self.backend.Install(pkgs, sync=True)
++                    elif action == 'u':
++                        self.backend.Update(pkgs, sync=True)
++                    elif action == 'r':
++                        self.backend.Remove(pkgs, sync=True)
++                    else:
++                        logger.error('Action %s not managed' % (action))
++        elif self.packageActionValue == const.Actions.REINSTALL:
++            pkg_ids = self.packageQueue.get('r')
+             if len(pkg_ids) >0:
+-              pkgs = [dnfdragora.misc.pkg_id_to_full_nevra(pkg_id) for pkg_id in pkg_ids]
+-              logger.debug('adding: %s %s' %(const.QUEUE_PACKAGE_TYPES[action], pkgs))
+-              if action == 'i':
+-                self.backend.Install(pkgs, sync=True)
+-              elif action == 'u':
+-                self.backend.Update(pkgs, sync=True)
+-              elif action == 'r':
+-                self.backend.Remove(pkgs, sync=True)
+-              else:
+-                logger.error('Action %s not managed' % (action))
++                pkgs = [dnfdragora.misc.pkg_id_to_full_nevra(pkg_id) for pkg_id in pkg_ids]
++                logger.debug('Reinstalling %s' %(pkgs))
++                self.backend.Reinstall(pkgs, sync=True)
++        elif self.packageActionValue == const.Actions.DOWNGRADE:
++            pkg_ids = self.packageQueue.get('r')
++            if len(pkg_ids) >0:
++                pkgs = [dnfdragora.misc.pkg_id_to_full_nevra(pkg_id) for pkg_id in pkg_ids]
++                logger.debug('Reinstalling %s' %(pkgs))
++                self.backend.Downgrade(pkgs, sync=True)
++        elif self.packageActionValue == const.Actions.DISTRO_SYNC:
++            pkg_ids = self.packageQueue.get('r')
++            pkgs=[]
++            if len(pkg_ids) >0:
++                pkgs.extend([ dnfdragora.misc.to_pkg_tuple(pkg_id)[0] for pkg_id in pkg_ids])
++            pkg_ids = self.packageQueue.get('u')
++            if len(pkg_ids) >0:
++                pkgs.extend([dnfdragora.misc.to_pkg_tuple(pkg_id)[0] for pkg_id in pkg_ids])
++            logger.debug('Distro Sync %s' %(pkgs))
++            self.backend.DistroSync(pkgs, sync=True)
+ 
+     def _undo_transaction(self):
+         '''
+@@ -1467,6 +1501,82 @@ def _load_history(self, transactions):
+         hw = None
+         return undo
+ 
++    def _updateActionView(self, newAction):
++        '''
++            Prepare the dnfdragora view according to the selected new action.
++            Remove any selections if the  action is changed (easy way to manage new action)
++            Force to rebuild the view if action is changed (easy way to manage new action)
++            Args:
++                newAction: action to be peroform on selected packages
++            Returns:
++                if packages view needs to be rebuilt
++        '''
++        rebuild_package_list = False
++        if newAction != self.packageActionValue:
++            rebuild_package_list = True
++            self.packageActionValue = newAction
++            ordered_filters = None
++            # reset any old selection to simplfy
++            self.packageQueue.clear()
++            #1. Changing Filters
++            filter_item = 'installed' #default
++            enable_select_all = False
++            apply_button_text = _("&Apply")
++            enable_apply_button = False
++            if newAction == const.Actions.NORMAL:
++                disable_select_all = True
++                #let's get back the last saved filter for NORMAL actions
++                filter_item = self.config.userPreferences['view']['filter']
++                ordered_filters = [ 'all', 'installed', 'to_update', 'not_installed' ]
++                if platform.machine() == "x86_64" :
++                    ordered_filters.append('skip_other')
++            elif newAction == const.Actions.DOWNGRADE:
++                ordered_filters = [ 'installed' ]
++                apply_button_text = _("&Downgrade")
++            elif newAction == const.Actions.REINSTALL:
++                ordered_filters = [ 'installed' ]
++                apply_button_text = _("&Reinstall")
++            elif newAction == const.Actions.DISTRO_SYNC:
++                ordered_filters = [ 'installed', 'to_update' ]
++                apply_button_text = _("&Distro Sync")
++                #distro sync can ber run without any file selected (sync all)
++                enable_apply_button = True
++                if self.update_only:
++                    filter_item = 'to_update'
++
++            for f in self.filters:
++                self.filters[f]['item'] = None
++
++            itemColl = yui.YItemCollection()
++            for f in ordered_filters:
++                item = yui.YItem(self.filters[f]['title'])
++                if filter_item == f:
++                    item.setSelected(True)
++                # adding item to filters to find the item selected
++                self.filters[f]['item'] = item
++                itemColl.push_back(item)
++                item.this.own(False)
++
++            self.filter_box.startMultipleChanges()
++            self.filter_box.deleteAllItems()
++            self.filter_box.addItems(itemColl)
++            #self.filter_box.setEnabled(not self.update_only)
++            self.filter_box.doneMultipleChanges()
++
++            # fixing groups
++            view = self._viewNameSelected()
++            filter = self._filterNameSelected()
++            self._fillGroupTree()
++
++            #Change Apply Button text accordingly
++            self.applyButton.setLabel(apply_button_text)
++            self.applyButton.setEnabled(enable_apply_button)
++            #disable "select all" to avoid mistakes
++            self.checkAllButton.setEnabled(enable_select_all)
++
++
++        return rebuild_package_list
++
+     def handleevent(self):
+         """
+         Event-handler for the maindialog
+@@ -1506,6 +1616,11 @@ def handleevent(self):
+                     elif item == self.optionsMenu['user_prefs'] :
+                         up = dialogs.OptionDialog(self)
+                         up.run()
++                    elif item == self.ActionMenu['actions'] :
++                        actDlg = dialogs.PackageActionDialog(self, self.packageActionValue)
++                        newAction = actDlg.run()
++                        rebuild_package_list = self._updateActionView(newAction)
++
+                     #elif item == self.infoMenu['history'] :
+                     #    self.backend.GetHistoryByDays(0, 120) #TODO add in config file
+                     elif item == self.helpMenu['help']  :
+@@ -1632,10 +1747,13 @@ def handleevent(self):
+             else:
+               self.info.setValue("")
+ 
+-            if self.packageQueue.total() > 0 and not self.applyButton.isEnabled():
++            if self.packageActionValue != const.Actions.DISTRO_SYNC:
++                if self.packageQueue.total() > 0 and not self.applyButton.isEnabled():
++                    self.applyButton.setEnabled()
++                elif self.packageQueue.total() == 0 and self.applyButton.isEnabled():
++                    self.applyButton.setEnabled(False)
++            elif not self.applyButton.isEnabled():
+                 self.applyButton.setEnabled()
+-            elif self.packageQueue.total() == 0 and self.applyButton.isEnabled():
+-                self.applyButton.setEnabled(False)
+ 
+         # Save user prefs on exit
+         self.saveUserPreference()
+@@ -2299,6 +2417,8 @@ def _OnBuildTransaction(self, info):
+             'Install': {},
+             'Remove':{},
+             'Upgrade': {},
++            'Reinstall':{},
++            'Downgrade':{},
+           }
+           for typ, action, who, unk, pkg in resolve:
+             '''
+@@ -2346,11 +2466,12 @@ def _OnBuildTransaction(self, info):
+         # and we are here most probably for a GPG key confirmed during last transaction
+         #TODO dialog to confirm transaction, NOTE that there is no clean transaction if user say no
+         if ok and not self.always_yes and self._status != DNFDragoraStatus.RUN_TRANSACTION:
+-          transaction_result_dlg = dialogs.TransactionResult(self)
+-          ok = transaction_result_dlg.run(self.started_transaction)
+-          if not ok:
+-            self._enableAction(True)
+-            return
++            if len(resolve) >0:
++                transaction_result_dlg = dialogs.TransactionResult(self)
++                ok = transaction_result_dlg.run(self.started_transaction)
++                if not ok:
++                    self._enableAction(True)
++                    return
+         elif ok !=0:
+           logger.error("Build transaction error %d", ok) #TODO read errors from dnf daemon
+ 

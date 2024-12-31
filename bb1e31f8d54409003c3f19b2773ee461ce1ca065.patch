@@ -1,0 +1,115 @@
+From bb1e31f8d54409003c3f19b2773ee461ce1ca065 Mon Sep 17 00:00:00 2001
+From: Angelo Naselli <anaselli@linux.it>
+Date: Mon, 30 Dec 2024 16:07:25 +0100
+Subject: [PATCH] Added signal transactionelemproceAdded management
+
+---
+ CMakeLists.txt            |  2 +-
+ Changes                   |  4 ++++
+ dnfdragora/dnfd_client.py | 22 ++++++++++++++++++++++
+ dnfdragora/ui.py          | 20 ++++++++++++++++++++
+ 4 files changed, 47 insertions(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2630c6f..bac925b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -4,7 +4,7 @@ if(POLICY CMP0048)
+ 	cmake_policy(SET CMP0048 NEW)
+ endif(POLICY CMP0048)
+ 
+-project(dnfdragora VERSION 2.99.0 LANGUAGES NONE)
++project(dnfdragora VERSION 2.99.1 LANGUAGES NONE)
+ 
+ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+ 
+diff --git a/Changes b/Changes
+index a673f33..535e933 100644
+--- a/Changes
++++ b/Changes
+@@ -1,3 +1,7 @@
++202X-XX-XX v. 2.99.1
++--------------------
++- Added signal transactionelemprocess
++
+ 2024-12-29 v. 2.99.0
+ --------------------
+ - Port to dnf5daemon
+diff --git a/dnfdragora/dnfd_client.py b/dnfdragora/dnfd_client.py
+index b805b03..14d9ef7 100644
+--- a/dnfdragora/dnfd_client.py
++++ b/dnfdragora/dnfd_client.py
+@@ -286,6 +286,8 @@ def _get_daemon(self):
+ 
+             self.iface_rpm.connect_to_signal("transaction_before_begin", self.on_TransactionBeforeBegin)
+ 
++            self.iface_rpm.connect_to_signal("transaction_elem_progress", self.on_TransactionElemProgress)
++
+             self.iface_rpm.connect_to_signal("transaction_verify_start", self.on_TransactionVerifyStart)
+             self.iface_rpm.connect_to_signal("transaction_verify_progress", self.on_TransactionVerifyProgress)
+             self.iface_rpm.connect_to_signal("transaction_verify_stop", self.on_TransactionVerifyStop)
+@@ -699,6 +701,26 @@ def on_TransactionBeforeBegin(self, *args) :
+         # Start the transaction timer
+         self.__TransactionTimer.start()
+ 
++    def on_TransactionElemProgress(self, session_object_path, nevra, processed, total):
++        """
++        Overall progress in transaction item processing. Called right before an item is processed.
++        Args:
++            @session_object_path: object path of the dnf5daemon session
++            @nevra: full NEVRA of the package
++            @processed: amount already processed (starting from 0, just before it is processed)
++            @total: total to process
++        """
++        # Start the transaction timer
++        self.__TransactionTimer.start()
++        self.eventQueue.put({'event': 'OnTransactionElemProgress',
++                             'value': {
++                                 'session_object_path': unpack_dbus(session_object_path),
++                                 'nevra': unpack_dbus(nevra),
++                                 'processed': unpack_dbus(processed),
++                                 'total': unpack_dbus(total),
++                                 }
++                             })
++
+     def on_TransactionAfterComplete(self,  session_object_path, success) :
+         '''
+             Sent right after the rpm transaction run finished.
+diff --git a/dnfdragora/ui.py b/dnfdragora/ui.py
+index b8c19bf..16c6dfd 100644
+--- a/dnfdragora/ui.py
++++ b/dnfdragora/ui.py
+@@ -1876,6 +1876,24 @@ def _OnTransactionActionStop(self, session_object_path, nevra, total):
+             return
+         self.infobar.reset_all()
+ 
++    def _OnTransactionElemProgress(self, session_object_path, nevra, processed, total):
++        """
++        Overall progress in transaction item processing. Called right before an item is processed.
++        Args:
++            @session_object_path: object path of the dnf5daemon session
++            @nevra: full NEVRA of the package
++            @processed: amount already processed (starting from 0, just before it is processed)
++            @total: total to process
++        """
++        values = (session_object_path, nevra, total)
++        logger.debug('OnTransactionElemProgress: %s', repr(values))
++        if session_object_path != self.backend.session_path :
++            logger.warning("OnTransactionElemProgress: Different session path received")
++            return
++        total_frac = (processed+1) / total if total > 0 else 0
++        self.infobar.set_progress(total_frac)
++        self.infobar.info( _('Transaction in progress: <%(nevra)s> starts') %{'nevra': nevra, })
++
+     def _OnTransactionTransactionStart(self, session_object_path, total):
+         '''
+             Preparation of transaction packages has started.
+@@ -2521,6 +2539,8 @@ def _manageDnfDaemonEvent(self):
+               self._OnTransactionActionProgress(info['session_object_path'], info['nevra'], info['processed'], info['total'])
+           elif (event == 'OnTransactionActionStop'):
+               self._OnTransactionActionStop(info['session_object_path'], info['nevra'], info['total'])
++          elif (event == 'OnTransactionElemProgress'):
++              self._OnTransactionElemProgress(info['session_object_path'], info['nevra'], info['processed'], info['total'])
+           elif (event == 'OnTransactionTransactionStart'):
+               self._OnTransactionTransactionStart(info['session_object_path'], info['total'])
+           elif (event == 'OnTransactionTransactionProgress'):
