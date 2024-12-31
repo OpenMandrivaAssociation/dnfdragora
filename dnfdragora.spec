@@ -13,6 +13,12 @@ Source0:	https://github.com/manatools/dnfdragora/archive/refs/tags/%{version}/%{
 Patch1:		0001-znver1-support.patch
 # patch to enable transaction logs https://issues.openmandriva.org/show_bug.cgi?id=2454  (penguin)
 Patch2:		enable-log.patch
+# upstream disto-sync support
+Patch3: https://github.com/manatools/dnfdragora/commit/bb1e31f8d54409003c3f19b2773ee461ce1ca065.patch
+Patch4: https://github.com/manatools/dnfdragora/commit/4164a5f4dcd5a51e7c9342eda6457ff988f28d8a.patch
+Patch5: https://github.com/manatools/dnfdragora/commit/15dd2b32a897a09f92685939ec5ce27f01b08e3f.patch
+Patch6: https://github.com/manatools/dnfdragora/commit/d9e2fba42cb1f490bbb5c84e56c45dc829867fd9.patch
+
 BuildRequires:	gettext
 BuildRequires:	itstool
 BuildRequires:	cmake
