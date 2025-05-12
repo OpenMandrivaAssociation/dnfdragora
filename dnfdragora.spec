@@ -3,7 +3,7 @@
 
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
-Version:	2.1.6
+Version:	2.99.1
 Release:	3
 License:	GPLv2+
 Group:		System/Configuration
@@ -19,15 +19,17 @@ BuildRequires:	cmake
 BuildRequires:	ninja
 BuildRequires:	pkgconfig(python)
 BuildRequires:	python%{pyver}dist(pyyaml)
-BuildRequires:	python-sphinx
-BuildRequires:	python-sh
-BuildRequires:	python-notify2
+BuildRequires:	python%{pyver}dist(sphinx)
+BuildRequires:	python%{pyver}dist(sh)
+BuildRequires:	python%{pyver}dist(notify2)
+BuildRequires:	python%{pyver}dist(cairosvg)
+BuildRequires:	python%{pyver}dist(pystray)
 Requires:	polkit
 Requires:	dbus
 Requires:	dnf
 Requires:	dnf-plugins-core
 Requires:	python-dnfdaemon
-Requires:	dnfdaemon
+Requires:	dnf5daemon-client
 Requires:	python-yui
 Requires:	python-yaml
 Requires:	python-dnf
@@ -69,7 +71,8 @@ Updating applet for %{name}
 %autosetup -p1
 sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
 %cmake -G Ninja \
-	-DENABLE_COMPS:BOOL=OFF
+	-DENABLE_COMPS:BOOL=OFF \
+	-DCHECK_RUNTIME_DEPENDENCIES=ON
 
 %build
 %ninja_build -C build
@@ -88,7 +91,6 @@ sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
 %{_bindir}/dnfdragora
 %{py_puresitedir}/dnfdragora
 %exclude %{py_puresitedir}/%{name}/updater.py
-%exclude %{py_puresitedir}/%{name}/__pycache__/updater.cpython*.py?
 %{_datadir}/appdata/org.mageia.dnfdragora.appdata.xml
 %{_datadir}/%{name}
 %{_datadir}/icons/hicolor/*/*/*.png
@@ -102,4 +104,3 @@ sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
 %{_datadir}/applications/*%{name}-updater.desktop
 %{_sysconfdir}/xdg/autostart/*%{name}*.desktop
 %{py_puresitedir}/%{name}/updater.py
-# %{py_puresitedir}/%{name}/__pycache__/updater.cpython*.py?
