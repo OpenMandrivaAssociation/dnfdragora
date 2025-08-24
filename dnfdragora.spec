@@ -4,7 +4,7 @@
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
 Version:	2.99.1
-Release:	1
+Release:	2
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
