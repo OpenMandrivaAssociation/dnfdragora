@@ -1,22 +1,20 @@
-%global debug_package %{nil}
 %define yui_major 16
 
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
-Version:	2.99.1
-Release:	3
+Version:	2.99.4
+Release:	1
 License:	GPLv2+
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
-Source0:	https://github.com/manatools/dnfdragora/archive/refs/tags/%{version}/%{name}-%{version}.tar.gz
-# ( crazy)  https://issues.openmandriva.org/show_bug.cgi?id=2422
-Patch1:		0001-znver1-support.patch
-# patch to enable transaction logs https://issues.openmandriva.org/show_bug.cgi?id=2454  (penguin)
-Patch2:		enable-log.patch
+Source0:	%url/archive/%{version}/%{name}-%{version}.tar.gz
+
+BuildSystem:	cmake
+BuildOption:	-DENABLE_COMPS:BOOL=OFF
+BuildOption:	-DCHECK_RUNTIME_DEPENDENCIES=ON
+
 BuildRequires:	gettext
 BuildRequires:	itstool
-BuildRequires:	cmake
-BuildRequires:	ninja
 BuildRequires:	pkgconfig(python)
 BuildRequires:	python%{pyver}dist(pyyaml)
 BuildRequires:	python%{pyver}dist(sphinx)
@@ -54,6 +52,12 @@ Requires:	%{_lib}yui-mga-ncurses
 %description
 Graphical frontend for installing and removing software.
 
+%patchlist
+# ( crazy)
+0001-znver1-support.patch
+# patch to enable transaction logs
+enable-log.patch
+
 %package updater
 Summary:	Update notifier applet for %{name}
 Requires:	%{name} = %{EVRD}
@@ -62,28 +66,13 @@ Requires:	python-notify2
 Requires:	python-pyxdg
 Requires:	python-cairosvg
 Requires:	python-imaging
-Requires:	python3dist(pystray)
+Requires:	python%{pyver}dist(pystray)
 
 %description updater
 Updating applet for %{name}
 
-%prep
-%autosetup -p1
+%conf -p
 sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
-%cmake -G Ninja \
-	-DENABLE_COMPS:BOOL=OFF \
-	-DCHECK_RUNTIME_DEPENDENCIES=ON
-
-%build
-%ninja_build -C build
-
-%install
-%ninja_install -C build
-
-%find_lang %{name}
-
-%check
-#make test
 
 %files -f %{name}.lang
 %dir %{_sysconfdir}/dnfdragora
