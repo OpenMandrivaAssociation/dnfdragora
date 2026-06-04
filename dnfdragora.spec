@@ -80,7 +80,6 @@ sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
 %{_bindir}/dnfdragora
 %{py_puresitedir}/dnfdragora
 %exclude %{py_puresitedir}/%{name}/updater.py
-%{_datadir}/appdata/org.mageia.dnfdragora.appdata.xml
 %{_datadir}/%{name}
 %{_datadir}/icons/hicolor/*/*/*.png
 %{_datadir}/applications/*%{name}.desktop
