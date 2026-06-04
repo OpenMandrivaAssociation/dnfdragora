@@ -42,10 +42,10 @@ Requires:	python-manatools
 Requires:	typelib(GLib)
 Requires:	glib-gir
 # FIXME split into qt/ncurses subpackages
-Requires:	%{_lib}yui-qt
-Requires:	%{_lib}yui-mga-qt
-Requires:	%{_lib}yui-ncurses
-Requires:	%{_lib}yui-mga-ncurses
+# Requires:	%{_lib}yui-qt
+# Requires:	%{_lib}yui-mga-qt
+# Requires:	%{_lib}yui-ncurses
+# Requires:	%{_lib}yui-mga-ncurses
 
 # (crazy) FIXME split updater
 
@@ -56,7 +56,7 @@ Graphical frontend for installing and removing software.
 # ( crazy)
 0001-znver1-support.patch
 # patch to enable transaction logs
-enable-log.patch
+# enable-log.patch
 
 %package updater
 Summary:	Update notifier applet for %{name}
