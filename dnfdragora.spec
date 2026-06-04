@@ -23,6 +23,7 @@ BuildRequires:	python%{pyver}dist(sh)
 BuildRequires:	python%{pyver}dist(notify2)
 BuildRequires:	python%{pyver}dist(cairosvg)
 BuildRequires:	python%{pyver}dist(pystray)
+BuildRequires:  python%{pyver}dist(python-manatools)
 Requires:	polkit
 Requires:	dbus
 Requires:	dnf
@@ -43,10 +44,6 @@ Requires:	python-manatools
 Requires:	typelib(GLib)
 Requires:	glib-gir
 # FIXME split into qt/ncurses subpackages
-# Requires:	%{_lib}yui-qt
-# Requires:	%{_lib}yui-mga-qt
-# Requires:	%{_lib}yui-ncurses
-# Requires:	%{_lib}yui-mga-ncurses
 
 # (crazy) FIXME split updater
 
@@ -82,7 +79,10 @@ sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
 %{py_puresitedir}/dnfdragora
 %exclude %{py_puresitedir}/%{name}/updater.py
 %{_datadir}/%{name}
-%{_datadir}/icons/hicolor/*/*/*.png
+%{_metainfodir}/org.mageia.%name.metainfo.xml
+%{_iconsdir}/hicolor/*/*/*.png
+%{_iconsdir}/hicolor/scalable/apps/%name.svg
+%{_iconsdir}/hicolor/scalable/apps/org.mageia.%name.svg
 %{_datadir}/applications/*%{name}.desktop
 %{_datadir}/applications/*%{name}-localinstall.desktop
 %doc %{_mandir}/man5/*.5*
