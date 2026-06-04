@@ -1,4 +1,5 @@
-%define yui_major 16
+# fixes error: Empty %files file …/debugsourcefiles.list
+%undefine _debugsource_template
 
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
