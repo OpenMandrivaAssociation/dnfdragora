@@ -3,9 +3,9 @@
 
 Summary:	Graphical frontend for installing and removing software
 Name:		dnfdragora
-Version:	2.99.4
-Release:	2
-License:	GPLv2+
+Version:	2.99.5
+Release:	1
+License:	GPL-2.0-or-later
 Group:		System/Configuration
 Url:		https://github.com/manatools/dnfdragora
 Source0:	%url/archive/%{version}/%{name}-%{version}.tar.gz
@@ -59,7 +59,7 @@ Graphical frontend for installing and removing software.
 %package updater
 Summary:	Update notifier applet for %{name}
 Requires:	%{name} = %{EVRD}
-Requires:	libnotify
+Requires:	typelib(Notify)
 Requires:	python-notify2
 Requires:	python-pyxdg
 Requires:	python-cairosvg
@@ -72,9 +72,36 @@ Updating applet for %{name}
 %conf -p
 sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
 
+%install -a
+sed -i '1s|#!/usr/bin/env python3|#!%{__python3}|' \
+	    %{buildroot}%{_bindir}/dnfdragora \
+    %{buildroot}%{_bindir}/dnfdragora-updater
+
+for sz in 16x16 32x32 48x48 64x64 128x128 256x256; do
+  h=%{buildroot}%{_datadir}/icons/hicolor/$sz/apps
+  d=%{buildroot}%{_datadir}/dnfdragora/images/$sz
+
+  ln -sf org.mageia.dnfdragora.png $h/dnfdragora.png
+
+  ln -sf %{_datadir}/icons/hicolor/$sz/apps/org.mageia.dnfdragora.png $d/dnfdragora.png
+  ln -sf %{_datadir}/icons/hicolor/$sz/apps/org.mageia.dnfdragora.png $d/dnfdragora-logo.png
+done
+
+ln -sf org.mageia.dnfdragora.svg \
+   %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/dnfdragora.svg
+
+ln -sf %{_datadir}/icons/hicolor/scalable/apps/org.mageia.dnfdragora.svg \
+   %{buildroot}%{_datadir}/dnfdragora/images/dnfdragora.svg
+ln -sf %{_datadir}/icons/hicolor/scalable/apps/org.mageia.dnfdragora.svg \
+   %{buildroot}%{_datadir}/dnfdragora/images/dnfdragora-logo.svg
+ln -sf %{_datadir}/icons/hicolor/128x128/apps/org.mageia.dnfdragora.png \
+   %{buildroot}%{_datadir}/dnfdragora/images/dnfdragora.png
+ln -sf %{_datadir}/icons/hicolor/128x128/apps/org.mageia.dnfdragora.png \
+   %{buildroot}%{_datadir}/dnfdragora/images/dnfdragora-logo.png
+
 %files -f %{name}.lang
 %dir %{_sysconfdir}/dnfdragora
-%{_sysconfdir}/dnfdragora/dnfdragora.yaml
+%config(noreplace) %{_sysconfdir}/dnfdragora/dnfdragora.yaml
 %{_bindir}/dnfdragora
 %{py_puresitedir}/dnfdragora
 %exclude %{py_puresitedir}/%{name}/updater.py
@@ -91,5 +118,5 @@ sed -i -e 's,/usr/bin/dbus-send,/bin/dbus-send,g' dnfdragora/misc.py
 %files updater
 %{_bindir}/%{name}-updater
 %{_datadir}/applications/*%{name}-updater.desktop
-%{_sysconfdir}/xdg/autostart/*%{name}*.desktop
+%config(noreplace) %{_sysconfdir}/xdg/autostart/*%{name}*.desktop
 %{py_puresitedir}/%{name}/updater.py
